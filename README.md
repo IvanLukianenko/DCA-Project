@@ -1,13 +1,9 @@
-# Sample Hardhat Project
+# DCA Project
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project implements DCA investment strategy for buying erc20 using DEX Uniswap.
 
-Try running some of the following tasks:
+Right now you can run test with following command:
 
 ```shell
-npx hardhat help
 npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
 ```
