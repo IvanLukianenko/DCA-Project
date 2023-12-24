@@ -6,6 +6,7 @@ pragma abicoder v2;
 import '@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol';
 import '@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol';
 import '@chainlink/contracts/src/v0.7/interfaces/AggregatorV3Interface.sol';
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 
 contract dcaContract{
@@ -70,7 +71,7 @@ contract dcaContract{
         priceFeeds[tokenAddresses["USDT"]] = AggregatorV3Interface(usdtEthAggregetor);
     }
 
-    function deposit(address _token, uint _tokenAmount) internal {
+    function deposit(address _token, uint _tokenAmount) external {
         // Transfer the specified amount of token to this contract.
         TransferHelper.safeTransferFrom(_token, msg.sender, address(this), _tokenAmount);
 
@@ -81,6 +82,10 @@ contract dcaContract{
         usersBalances[msg.sender].tokenAmount[_token] += _tokenAmount;
 
         emit deposited(msg.sender, _tokenAmount);
+    }
+
+    function getBalance(address _token) external view returns (uint) {
+        return usersBalances[msg.sender].tokenAmount[_token];
     }
 
     function setDcaParams(

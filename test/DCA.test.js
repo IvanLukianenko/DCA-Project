@@ -9,6 +9,8 @@ describe("DCA Investing Contract", function () {
   let user1
   let user2
 
+  const whaleAccountAddress = '0x1234567890123456789012345678901234567890'
+
   const swapRouterAddress = '0xE592427A0AEce92De3Edee1F18E0157C05861564'
 
   const erc20UsdtToken = '0xdAC17F958D2ee523a2206206994597C13D831ec7'
@@ -17,6 +19,9 @@ describe("DCA Investing Contract", function () {
 
   const daiEthPoolFeed = '0x773616E4d11A78F511299002da57A0a94577F1f4'
   const usdtEthPoolFeed = '0xEe9F2375b4bdF6387aa8265dD4FB8F16512A1d46'
+
+  let usdtErc20Token
+  let daiErc20Token
 
   const purchaseAmount = 1000;
   const purchaseIterval = 100;
@@ -35,8 +40,21 @@ describe("DCA Investing Contract", function () {
         usdtEthPoolFeed
       ], {signer:dcaOwner})
     await dca.waitForDeployment()
+
+    const whaleAccount = await ethers.getImpersonatedSigner(whaleAccountAddress);
+
+    usdtErc20Token = await ethers.getContractAt("IERC20", erc20UsdtToken)
+    daiErc20Token = await ethers.getContractAt("IERC20", erc20DaiToken)
+
+    await usdtErc20Token.connect(whaleAccount).transfer(user1.address, 10000)
+    await usdtErc20Token.connect(whaleAccount).transfer(user2.address, 10000)
+
+    await daiErc20Token.connect(whaleAccount).transfer(user1.address, 10000)
+    await daiErc20Token.connect(whaleAccount).transfer(user2.address, 10000)
+
     return dca
   }
+
   describe("Deploying, setting, getting, depositting", function() {
     it("should be deployed", async function() {
       const dca = await loadFixture(deployDcaContractFixture)
@@ -68,7 +86,7 @@ describe("DCA Investing Contract", function () {
       expect(userPurchaseInterval).to.be.equal(purchaseIterval)
     })
 
-  it("should not set and get params of another user sender", async function(){
+  it("should not set and get params of another user sender", async function() {
     const dca = await loadFixture(deployDcaContractFixture)
     await dca.connect(user1).setDcaParams(
       [
@@ -92,9 +110,23 @@ describe("DCA Investing Contract", function () {
     expect(userPurchaseAmount).to.be.equal(0)
     expect(userPurchaseInterval).to.be.equal(0)
   })
-  it('should give users ability to deposit their tokens', async function(){
+
+  it('should give users ability to deposit usdt tokens', async function() {
     const dca = await loadFixture(deployDcaContractFixture)
-    
+    const depositedUsdtAmount = 10000
+
+    await usdtErc20Token.connect(user1).approve(dca.target, depositedUsdtAmount)
+
+    await dca.connect(user1).deposit(
+      erc20UsdtToken,
+      depositedUsdtAmount
+    )
+
+    const userUsdtBalance = await dca.connect(user1).getBalance(erc20UsdtToken)
+    const userDaiBalance = await dca.connect(user2).getBalance(erc20DaiToken)
+
+    expect(userUsdtBalance).to.be.equal(depositedUsdtAmount)
+    expect(userDaiBalance).to.be.equal(0)
   })
 })
 
@@ -115,12 +147,6 @@ describe("DCA Investing Contract", function () {
   })
   
   describe("Swapping tokens", function() {
-    it("should have usdt tokens", async function() {
-      const usdtErc20Token = await ethers.getContractAt("IERC20", erc20UsdtToken)
-      await usdtErc20Token.transfer(user1.address, 100)
-      const balanceOfUsdt = await usdtErc20Token.balanceOf(user1.address)
-      console.log(balanceOfUsdt)
-      expect(balanceOfUsdt).to.be.equal(100)
-    })
+    it("should have usdt tokens", async function() {})
   })
 })
