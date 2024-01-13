@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useEffect, Component, useState } from 'react';
+import React, { useEffect, Component } from 'react';
 import dcaABI from './ContractAbi';
 import Web3 from 'web3';
 
