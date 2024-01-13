@@ -9,6 +9,8 @@ import '@chainlink/contracts/src/v0.7/interfaces/AggregatorV3Interface.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 
+import "hardhat/console.sol";
+
 contract dcaContract{
 
     struct singleDcaParams {
@@ -111,10 +113,10 @@ contract dcaContract{
         );
     }
 
-    function executeDca(tradePair memory _tradePair) internal {
+    function executeDca(tradePair memory _tradePair) external {
         address user = msg.sender;
 
-        singleDcaParams storage currentDcaParams = usersDcaParams[user].tradePairParams[keccak256(abi.encode(_tradePair.tokenIn, _tradePair.tokenOut))];
+        singleDcaParams storage currentDcaParams = usersDcaParams[user].tradePairParams[keccak256(abi.encode(_tradePair))];
         uint256 userTokenAmount = usersBalances[user].tokenAmount[_tradePair.tokenIn];
         uint256 amountIn = this.swapExactOutputSingle(user, _tradePair, currentDcaParams.purchaseAmount, userTokenAmount);
 
@@ -139,7 +141,6 @@ contract dcaContract{
         uint256 _amountOut,
         uint256 _amountInMaximum
     ) external returns (uint256 amountIn) {
-
         ISwapRouter.ExactOutputSingleParams memory params =
             ISwapRouter.ExactOutputSingleParams({
                 tokenIn: _tradePair.tokenIn,
