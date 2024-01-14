@@ -130,7 +130,7 @@ class UI extends Component {
                   Set DCA Parameters
                 </button>
               </div>
-              <div class="inputBx">
+              <div className="inputBx">
                 <label htmlFor="interval">Interval (seconds):</label>
                 <input type="text" id="interval" placeholder="Enter interval" />
                 <button onClick={this.dcaApp.executeDca}>Execute DCA</button>
