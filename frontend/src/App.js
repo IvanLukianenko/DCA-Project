@@ -108,27 +108,37 @@ class UI extends Component {
   };
 
   render() {
-    return (<div>
-      <h1>DCA Smart Contract Interaction</h1>
-      <button onClick={this.handleDepositClick}>
-          Deposit
-      </button>
-      <br />
-      <label htmlFor="amount">Amount:</label>
-      <input type="text" id="amount" placeholder="Enter amount" />
-      <label htmlFor="amount">Token:</label>
-      <input type="text" id="tokenAddress" placeholder="Enter token address" />
-      <br />
-      <button onClick={this.dcaApp.setDcaParams}>Set DCA Parameters</button>
-      <br />
-      <label htmlFor="ethAmount">ETH Amount:</label>
-      <input type="text" id="ethAmount" placeholder="Enter ETH amount" />
-      <br />
-      <label htmlFor="interval">Interval (seconds):</label>
-      <input type="text" id="interval" placeholder="Enter interval" />
-      <br />
-      <button onClick={this.dcaApp.executeDca}>Execute DCA</button>
-    </div>
+    return (
+      <section>
+        <div className="box">
+          <div className="form">
+            <h2>DCA Smart Contract Interaction</h2>
+            <form>
+              <div className="inputBx">
+                <label htmlFor="amount">Amount:</label>
+                <input type="text" id="amount" placeholder="Enter amount" />
+                <button onClick={this.dcaApp.deposit}>Deposit</button>
+              </div>
+              <div className="inputBx">
+                <label htmlFor="ethAmount">ETH Amount:</label>
+                <input
+                  type="text"
+                  id="ethAmount"
+                  placeholder="Enter ETH amount"
+                />
+                <button onClick={this.dcaApp.setDcaParams}>
+                  Set DCA Parameters
+                </button>
+              </div>
+              <div class="inputBx">
+                <label htmlFor="interval">Interval (seconds):</label>
+                <input type="text" id="interval" placeholder="Enter interval" />
+                <button onClick={this.dcaApp.executeDca}>Execute DCA</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
     );
   }
 }
