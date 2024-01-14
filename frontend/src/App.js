@@ -3,26 +3,30 @@ import React, { useEffect, Component } from 'react';
 import dcaABI from './ContractAbi';
 import Web3 from 'web3';
 
-const dcaAddress = "#TODO:0x0000000000000000000000000000";
+const dcaAddress = "0xD6BDAeAA27b0E0513C6A54bb2f6F744DbEF8aae8";
 
 class DcaApp {
-  init() {
+  async init() {
     if (window.ethereum) {
-      window.ethereum.enable();
       this.web3 = new Web3(window.ethereum);
-      this.userAccount = this.web3.eth.accounts[0];
+      this.userAccount = await window.ethereum.request({ method: 'eth_requestAccounts' })[0];
       this.dcaContract = new this.web3.eth.Contract(dcaABI, dcaAddress);
     } else {
-      console.error("No extension for ethereum found");
+      alert("No extension for ethereum found");
     }
-
-    let _ = setInterval(function () {
+    let _ = setInterval(async function () {
       // Check if account has changed
-      if (this.web3.eth.accounts[0] !== this.userAccount) {
-        this.userAccount = this.web3.eth.accounts[0];
+      try {
+        let tempUserAccount = await window.ethereum.request({ method: 'eth_requestAccounts' })[0];
+        if (tempUserAccount !== this.userAccount) {
+          this.userAccount = tempUserAccount;
+        }
+      } catch (error) {
+        console.log(error);
       }
-    }, 100);
+    }, 1000);
   }
+
 
   async deposit() {
     const amount = document.getElementById('amount').value;
