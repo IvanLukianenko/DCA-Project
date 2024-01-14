@@ -126,7 +126,7 @@ describe("DCA Investing Contract", function () {
     const dca = await loadFixture(deployDcaContractFixture)
 
     const depositedUsdtAmount = BALANCE / 10
-    await usdtErc20Token.connect(user1).approve(dca.target, depositedUsdtAmount)
+    //await usdtErc20Token.connect(user1).approve(dca.target, depositedUsdtAmount)
 
     await dca.connect(user1).deposit(
       erc20TokenAdresses['USDT'],

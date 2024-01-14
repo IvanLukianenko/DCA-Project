@@ -7,21 +7,32 @@
 const hre = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
 
-  const lockedAmount = hre.ethers.parseEther("0.001");
+  const erc20TokenAdresses = {
+    'USDT': '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    'DAI': '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    'WETH': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+  }
+  const ethPoolFeedAdresses = {
+    'DAI': '0x773616E4d11A78F511299002da57A0a94577F1f4',
+    'USDT': '0xEe9F2375b4bdF6387aa8265dD4FB8F16512A1d46'
+  }
+  const swapRouterAddress = '0xE592427A0AEce92De3Edee1F18E0157C05861564'
 
-  const lock = await hre.ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
-
-  await lock.waitForDeployment();
+  const dca = await hre.ethers.deployContract(
+    'dcaContract',
+    [
+      swapRouterAddress,
+      erc20TokenAdresses['DAI'],
+      erc20TokenAdresses['USDT'],
+      erc20TokenAdresses['WETH'],
+      ethPoolFeedAdresses['DAI'],
+      ethPoolFeedAdresses['USDT']
+    ])
+  await dca.waitForDeployment()
 
   console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
+    `deployed to ${dca.target}`
   );
 }
 
