@@ -106,18 +106,22 @@ class UI extends Component {
       alert('DCA App is still initializing. Please wait.');
     }
   };
-// TODO: write func for updating balances
+  // todo: write func for updating balances
   render() {
     return (
       <section>
         <div className="box">
-          <div className="form">
+          <div className="token form">
             <h2>DCA Smart Contract Interaction</h2>
             <form>
+              <div class="inputBx">
+                <label htmlFor="tokenAddress">Token Address:</label>
+                <input type="text" id="tokenAddress" placeholder="Enter token address"></input>
+              </div>
               <div className="inputBx">
                 <label htmlFor="amount">Amount:</label>
                 <input type="text" id="amount" placeholder="Enter amount" />
-                <button onClick={this.dcaApp.deposit}>Deposit</button>
+                <button onClick={this.handleDepositClick} type='button'>Deposit</button>
               </div>
               <div className="inputBx">
                 <label htmlFor="ethAmount">ETH Amount:</label>
@@ -126,19 +130,50 @@ class UI extends Component {
                   id="ethAmount"
                   placeholder="Enter ETH amount"
                 />
-                <button onClick={this.dcaApp.setDcaParams}>
+                <button onClick={this.dcaApp.setDcaParams} type='button'>
                   Set DCA Parameters
                 </button>
               </div>
-              <div className="inputBx">
+              <div class="inputBx">
                 <label htmlFor="interval">Interval (seconds):</label>
                 <input type="text" id="interval" placeholder="Enter interval" />
-                <button onClick={this.dcaApp.executeDca}>Execute DCA</button>
+                <button onClick={this.dcaApp.executeDca} type='button'>Execute DCA</button>
               </div>
             </form>
           </div>
+          <div className="token persondata">
+            <label for="token">
+              token:
+              <p>a</p>
+            </label>
+            <label for="token1">
+              token1:
+              <p>v</p>
+            </label>
+            <label for="token1">
+              token1:
+              <p>c</p>
+            </label>
+            <label for="token1">
+              token1:
+              <p>d</p>
+            </label>
+            <label for="token1">
+              token1:
+              <p>e</p>
+            </label>
+            <label for="token1">
+              token1:
+              <p>d</p>
+            </label>
+            <label for="token1">
+              token1:
+              <p>g</p>
+            </label>
+          </div>
         </div>
       </section>
+
     );
   }
 }

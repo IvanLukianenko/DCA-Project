@@ -12,6 +12,8 @@ section {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  width: 100%;
+  padding: 40px 100px;
   background: linear-gradient(-30deg,
       #03a9f4 0%,
       #3a78b7 50%,
@@ -31,20 +33,27 @@ section {
   }
 }
 
-.box {
+.persondata {
+  grid-area: persondata;
   position: relative;
-  padding: 50px;
-  min-width: 360px;
-  min-height: 480px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+}
+
+.form {
+  grid-area: form;
+  position: relative;
+}
+
+.token {
+  padding: 40px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   box-shadow: 0 5px 35px rgba(0, 0, 0, 0.2);
 }
 
-.box::after {
+.persondata::after,
+.form::after {
   content: "";
   position: absolute;
   inset: 5px;
@@ -58,9 +67,16 @@ section {
       rgba(255, 255, 255, 0.3) 100%);
 }
 
-.box .form {
+.box {
   position: relative;
-  width: 100%;
+  display: grid;
+  align-content: center;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 5fr 4fr;
+  grid-template-areas:
+    "form persondata"
+    "form .";
+  grid-gap: 20px;
 }
 
 .box .form h2 {
@@ -79,10 +95,15 @@ section {
   margin-bottom: 20px;
 }
 
-.box .form .inputBx label {
+.token label,
+p {
   display: inline-block;
   font-weight: 300;
   color: #fff;
+}
+
+.token label:not(:last-of-type),
+.token p:not(:last-of-type) {
   margin-bottom: 10px;
 }
 
