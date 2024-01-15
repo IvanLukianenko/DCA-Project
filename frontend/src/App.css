@@ -38,7 +38,7 @@ section {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 8px;
 }
 
 .form {
@@ -80,11 +80,16 @@ section {
   grid-gap: 20px;
 }
 
-.box .form h2 {
+h2 {
   font-weight: 600;
   color: #fff;
-  letter-spacing: 2px;
+  letter-spacing: 0.5px;
   margin-bottom: 30px;
+}
+
+.balancesSidebar {
+  margin-bottom: 0px;
+  text-align: center;
 }
 
 .box .form .inputBx {
@@ -101,6 +106,13 @@ p {
   display: inline-block;
   font-weight: 300;
   color: #fff;
+  text-align: center;
+
+}
+
+.tokenName {
+  font-weight: 800;
+
 }
 
 .token label:not(:last-of-type),

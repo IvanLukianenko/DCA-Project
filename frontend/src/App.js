@@ -49,7 +49,7 @@ class DcaApp {
     let currentAccount = this.userAccount;
     let token_name_to_balance = {};
     for (let key in erc20TokenAdresses) {
-      token_name_to_balance[key] = Math.floor(Math.random() * 5);
+      token_name_to_balance[key] = Math.floor(Math.random() * 1500);
     }
     return currentAccount, token_name_to_balance;
   }
@@ -113,10 +113,11 @@ class UI extends Component {
     let currentAccount, token_name_to_balance = await this.dcaApp.getTokenBalances();
 
     let tokens_to_info = [];
+    tokens_to_info.push(<h2 className='balancesSidebar' >Balances</h2>);
     for (let key in token_name_to_balance) {
-      tokens_to_info.push(<label htmlFor="token">
-        {key}:
-        <p> {token_name_to_balance[key]}</p>
+      tokens_to_info.push(<label htmlFor={String(key)}>
+        {key}:&nbsp;
+        <p className='tokenName'>{(token_name_to_balance[key])}</p>
       </label>);
     }
     let token_person_data_div = document.getElementById('tokenPersonData');
