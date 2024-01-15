@@ -106,7 +106,7 @@ class UI extends Component {
       alert('DCA App is still initializing. Please wait.');
     }
   };
-
+// todo: write func for updating balances
   render() {
     return (
       <section>
