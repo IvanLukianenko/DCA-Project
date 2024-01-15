@@ -110,17 +110,24 @@ class UI extends Component {
     this.dcaApp = new DcaApp();
   };
 
-  async renderPersonTokenData() {
-    let currentAccount, token_name_to_balance = await this.dcaApp.getPersonTokenData();
-
+  generatePersonTokenData(currentAccount, token_name_to_balance) {
     let tokens_to_info = [];
-    tokens_to_info.push(<h2 className='balancesSidebar' >Balances</h2>);
+    if (currentAccount == undefined) {
+      currentAccount = 'undefined'
+    }
+    tokens_to_info.push(<h2 className='balancesSidebar'>Balances</h2>);
+    tokens_to_info.push(<p className='tokenName'>My name is: {currentAccount}</p>);
     for (let key in token_name_to_balance) {
       tokens_to_info.push(<label htmlFor={String(key)}>
         {key}:&nbsp;
         <p className='tokenName'>{(token_name_to_balance[key])}</p>
       </label>);
     }
+    return tokens_to_info;
+  }
+  async renderPersonTokenData() {
+    let currentAccount, token_name_to_balance = await this.dcaApp.getPersonTokenData();
+    let tokens_to_info = this.generatePersonTokenData(currentAccount, token_name_to_balance)
     let token_person_data_div = document.getElementById('tokenPersonData');
     const root = createRoot(token_person_data_div);
     root.render(tokens_to_info);
