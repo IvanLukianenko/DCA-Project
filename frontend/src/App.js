@@ -1,6 +1,7 @@
 import './App.css';
 import React, { Component } from 'react';
 import dcaABI from './ContractAbi';
+import { createRoot } from 'react-dom/client';
 import IERC20ABI from './IERC20Abi';
 import Web3 from 'web3';
 
@@ -35,8 +36,19 @@ class DcaApp {
       } catch (error) {
         console.log(error);
       }
-    }, 1000);
+    }, 100);
   }
+
+  async getTokenBalances() {
+    let currentAccount = this.userAccount;
+    let token_name_to_balance = {};
+    for (let key in erc20TokenAdresses) {
+      token_name_to_balance[key] = Math.floor(Math.random() * 5);
+    }
+    return currentAccount, token_name_to_balance;
+  }
+
+
 
   async deposit() {
     const amount = document.getElementById('amount').value;
@@ -91,11 +103,25 @@ class UI extends Component {
     super(props);
     this.dcaApp = new DcaApp();
   };
-
+  async getPersonTokenData() {
+    let currentAccount, token_name_to_balance = await this.dcaApp.getTokenBalances();
+    console.log(currentAccount);
+    let tokens_to_info = [];
+    for (let key in token_name_to_balance) {
+      tokens_to_info.push(<label htmlFor="token">
+        {key}:
+        <p>{token_name_to_balance[key]}</p>
+      </label>);
+    }
+    let token_person_data_div = document.getElementById('tokenPersonData');
+    const root = createRoot(token_person_data_div);
+    root.render(tokens_to_info);
+  };
   async componentDidMount() {
     // Asynchronously initialize DcaApp
     await this.dcaApp.init();
     this.setState({ isInitialized: true });
+    this.getPersonTokenData();
   };
 
   handleDepositClick = async () => {
@@ -106,7 +132,7 @@ class UI extends Component {
       alert('DCA App is still initializing. Please wait.');
     }
   };
-  // todo: write func for updating balances
+  // TODO: write func for updating balances
   render() {
     return (
       <section>
@@ -114,7 +140,7 @@ class UI extends Component {
           <div className="token form">
             <h2>DCA Smart Contract Interaction</h2>
             <form>
-              <div class="inputBx">
+              <div className="inputBx">
                 <label htmlFor="tokenAddress">Token Address:</label>
                 <input type="text" id="tokenAddress" placeholder="Enter token address"></input>
               </div>
@@ -134,41 +160,17 @@ class UI extends Component {
                   Set DCA Parameters
                 </button>
               </div>
-              <div class="inputBx">
+              <div className="inputBx">
                 <label htmlFor="interval">Interval (seconds):</label>
                 <input type="text" id="interval" placeholder="Enter interval" />
                 <button onClick={this.dcaApp.executeDca} type='button'>Execute DCA</button>
               </div>
             </form>
           </div>
-          <div className="token persondata">
-            <label for="token">
+          <div className="token persondata" id='tokenPersonData'>
+            <label htmlFor="token">
               token:
               <p>a</p>
-            </label>
-            <label for="token1">
-              token1:
-              <p>v</p>
-            </label>
-            <label for="token1">
-              token1:
-              <p>c</p>
-            </label>
-            <label for="token1">
-              token1:
-              <p>d</p>
-            </label>
-            <label for="token1">
-              token1:
-              <p>e</p>
-            </label>
-            <label for="token1">
-              token1:
-              <p>d</p>
-            </label>
-            <label for="token1">
-              token1:
-              <p>g</p>
             </label>
           </div>
         </div>
