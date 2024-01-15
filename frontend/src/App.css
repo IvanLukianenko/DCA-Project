@@ -37,6 +37,7 @@ section {
   position: relative;
   display: flex;
   flex-direction: column;
+
 }
 
 .persondata {
@@ -60,6 +61,7 @@ section {
 }
 
 .persondata::after,
+.dcaparams::after,
 .form::after {
   content: "";
   position: absolute;

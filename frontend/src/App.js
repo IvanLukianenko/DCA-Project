@@ -67,8 +67,8 @@ class DcaApp {
       ).call({
         from: this.userAccount
       });
-      
-      const { 0: purchaseAmount, 1: purchaseInterval} = result;
+
+      const { 0: purchaseAmount, 1: purchaseInterval } = result;
       console.log(key, purchaseAmount.toString());
       token_name_to_purchaseAmount[key] = purchaseAmount.toString();
       token_name_to_purchaseInterval[key] = purchaseInterval.toString();
@@ -182,14 +182,29 @@ class UI extends Component {
     // Asynchronously initialize DcaApp
     await this.dcaApp.init();
     this.setState({ isInitialized: true });
-    await this.renderBalances();
-    await this.renderDcaParams();
+    try {
+      await this.renderBalances();
+    } catch (error) {
+      alert('Error uploading balances. Check your blockchain connection. Check console');
+      console.log(error);
+    }
+    try {
+      await this.renderDcaParams();
+    } catch (error) {
+      alert('Error uploading DCA Parameters. Check your blockchain connection. Check console');
+      console.log(error);
+    }
   };
 
   handleDepositClick = async () => {
     // Check if initialization is complete before calling deposit
     if (this.state.isInitialized) {
-      await this.dcaApp.deposit();
+      try {
+        await this.dcaApp.deposit();
+      } catch (error) {
+        alert('Check your blockchain connection. Check console');
+        console.log(error);
+      }
     } else {
       alert('DCA App is still initializing. Please wait.');
     }
@@ -197,7 +212,12 @@ class UI extends Component {
 
   handleSetParamsClick = async () => {
     if (this.state.isInitialized) {
-      await this.dcaApp.setDcaParams();
+      try {
+        await this.dcaApp.setDcaParams();
+      } catch (error) {
+        alert('Check your blockchain connection. Check console');
+        console.log(error);
+      }
     } else {
       alert('DCA App is still initializing. Please wait.');
     }
@@ -210,15 +230,25 @@ class UI extends Component {
       // } else {
       //   alert('DCA params is not set yet. First set params.');
       // }
-      await this.dcaApp.executeDca();
+      try {
+        await this.dcaApp.executeDca();
+      } catch (error) {
+        alert('Error execute DCA. Check your blockchain connection. Check console');
+        console.log(error);
+      }
     } else {
       alert('DCA App is still initializing. Please wait.');
     }
   }
-  
+
   handleRefreshBalancesClick = async () => {
     if (this.state.isInitialized) {
-      await this.renderBalances()
+      try {
+        await this.renderBalances();
+      } catch (error) {
+        alert('Error uploading balances. Error Check your blockchain connection. Check console');
+        console.log(error);
+      }
     } else {
       alert('DCA App is still initializing. Please wait.');
     }
@@ -226,12 +256,17 @@ class UI extends Component {
 
   handleRefreshDcaParamsClick = async () => {
     if (this.state.isInitialized) {
-      await this.renderDcaParams()
+      try {
+        await this.renderDcaParams();
+      } catch (error) {
+        alert('Error uploading DCA parameters. Check your blockchain connection. Check console');
+        console.log(error);
+      }
     } else {
       alert('DCA App is still initializing. Please wait.');
     }
   }
-// TODO: write func for updating balances
+  // TODO: write func for updating balances
   render() {
     return (<section>
       <div className="box">
@@ -248,7 +283,7 @@ class UI extends Component {
               <button onClick={this.handleDepositClick} type='button'>Deposit</button>
             </div>
             <div className="inputBx">
-            <label htmlFor="ethAmount">Token Address:</label>
+              <label htmlFor="ethAmount">Token Address:</label>
               <input
                 type="text"
                 id="purchaseAddress"
@@ -256,7 +291,7 @@ class UI extends Component {
               />
             </div>
             <div className="inputBx">
-            <label htmlFor="ethAmount">Token Amount:</label>
+              <label htmlFor="ethAmount">Token Amount:</label>
               <input
                 type="text"
                 id="purchaseAmount"
@@ -281,22 +316,24 @@ class UI extends Component {
         </div>
         <div className="token persondata" id='tokenPersonData'>
           <label htmlFor="token">
-            token:
-            <p> a </p>
+            <p> No data loaded check</p>
+            <br></br>
+            <p> your blockchain connection</p>
           </label>
         </div>
         <div className="token dcaparams" id='tokenDcaParams'>
           <label htmlFor="token">
-            token:
-            <p> a </p>
+            <p> No data loaded check</p>
+            <br></br>
+            <p> your blockchain connection</p>
           </label>
         </div>
-        
+
         <button onClick={this.handleRefreshBalancesClick} type='button'>
-            Refresh balances
+          Refresh balances
         </button>
         <button onClick={this.handleRefreshDcaParamsClick} type='button'>
-            Refresh DCA params
+          Refresh DCA params
         </button>
       </div>
     </section>
