@@ -80,6 +80,7 @@ contract dcaContract{
 
     function deposit(address _token, uint _tokenAmount) external {
         // Transfer the specified amount of token to this contract.
+        require(usersBalances[msg.sender].tokenAmount[_token] == 0, 'Deposit only once');
         TransferHelper.safeTransferFrom(_token, msg.sender, address(this), _tokenAmount);
 
         // Approve the router to spend the specifed `_tokenAmount` of token.
