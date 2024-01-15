@@ -32,6 +32,10 @@ contract dcaContract{
         mapping (bytes32 => singleDcaParams) tradePairParams;
     }
 
+    struct pairTimestamp {
+        mapping (bytes32 => uint256) pair;
+    }
+
     event deposited(
         address user,
         uint256 depositedAmount
@@ -50,6 +54,7 @@ contract dcaContract{
 
     mapping (address => dcaParams) usersDcaParams;
     mapping (address => balances) usersBalances;
+    mapping (address => pairTimestamp) usersLastTimestamp;
 
     ISwapRouter public immutable swapRouter;
     mapping(address => AggregatorV3Interface) internal priceFeeds;
@@ -115,8 +120,13 @@ contract dcaContract{
 
     function executeDca(tradePair memory _tradePair) external {
         address user = msg.sender;
-
         singleDcaParams storage currentDcaParams = usersDcaParams[user].tradePairParams[keccak256(abi.encode(_tradePair))];
+
+        require(
+            block.timestamp - usersLastTimestamp[user].pair[keccak256(abi.encode(_tradePair))] > currentDcaParams.purchaseInterval, 
+            'purchaseInterval has not spent'
+        );
+
         uint256 userTokenAmount = usersBalances[user].tokenAmount[_tradePair.tokenIn];
         uint256 amountIn = this.swapExactOutputSingle(user, _tradePair, currentDcaParams.purchaseAmount, userTokenAmount);
 

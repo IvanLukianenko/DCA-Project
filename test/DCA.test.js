@@ -126,7 +126,7 @@ describe("DCA Investing Contract", function () {
     const dca = await loadFixture(deployDcaContractFixture)
 
     const depositedUsdtAmount = BALANCE / 10
-    //await usdtErc20Token.connect(user1).approve(dca.target, depositedUsdtAmount)
+    await usdtErc20Token.connect(user1).approve(dca.target, depositedUsdtAmount)
 
     await dca.connect(user1).deposit(
       erc20TokenAdresses['USDT'],
@@ -187,7 +187,6 @@ describe("DCA Investing Contract", function () {
         ]
       )
       const { 0: userPurchaseAmount, 1: userPurchaseInterval} = userDcaParams
-      console.log(await dca.connect(user1).getBalance(erc20TokenAdresses['USDT']))
       await dca.connect(user1).executeDca(
         [
           erc20TokenAdresses['USDT'],
@@ -200,8 +199,6 @@ describe("DCA Investing Contract", function () {
         erc20TokenAdresses['WETH']
       )
       const wethUserBalance = await wethErc20Token.balanceOf(user1)
-      console.log(await dca.connect(user1).getBalance(erc20TokenAdresses['USDT']))
-      console.log(wethUserBalance)
       expect(wethUserBalance).to.be.equal(userPurchaseAmount)
     })
   })
