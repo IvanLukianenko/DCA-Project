@@ -45,7 +45,7 @@ class DcaApp {
     }, 100);
   }
 
-  async getTokenBalances() {
+  async getPersonTokenData() {
     let currentAccount = this.userAccount;
     let token_name_to_balance = {};
     for (let key in erc20TokenAdresses) {
@@ -109,8 +109,9 @@ class UI extends Component {
     super(props);
     this.dcaApp = new DcaApp();
   };
-  async getPersonTokenData() {
-    let currentAccount, token_name_to_balance = await this.dcaApp.getTokenBalances();
+
+  async renderPersonTokenData() {
+    let currentAccount, token_name_to_balance = await this.dcaApp.getPersonTokenData();
 
     let tokens_to_info = [];
     tokens_to_info.push(<h2 className='balancesSidebar' >Balances</h2>);
@@ -124,11 +125,12 @@ class UI extends Component {
     const root = createRoot(token_person_data_div);
     root.render(tokens_to_info);
   };
+
   async componentDidMount() {
     // Asynchronously initialize DcaApp
     await this.dcaApp.init();
     this.setState({ isInitialized: true });
-    this.getPersonTokenData();
+    this.renderPersonTokenData();
   };
 
   handleDepositClick = async () => {
