@@ -9,6 +9,12 @@ const dcaAddress = "0xAE246E208ea35B3F23dE72b697D47044FC594D5F";
 const erc20TokenAdresses = {
   'USDT': '0xdAC17F958D2ee523a2206206994597C13D831ec7',
   'DAI': '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+  'DAI1': '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+  'DAI2': '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+  'DAI3': '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+  'DAI4': '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+  'DAI30': '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+  'DAI40': '0x6B175474E89094C44Da98b954EedeAC495271d0F',
   'WETH': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 }
 
@@ -105,12 +111,12 @@ class UI extends Component {
   };
   async getPersonTokenData() {
     let currentAccount, token_name_to_balance = await this.dcaApp.getTokenBalances();
-    console.log(currentAccount);
+
     let tokens_to_info = [];
     for (let key in token_name_to_balance) {
       tokens_to_info.push(<label htmlFor="token">
         {key}:
-        <p>{token_name_to_balance[key]}</p>
+        <p> {token_name_to_balance[key]}</p>
       </label>);
     }
     let token_person_data_div = document.getElementById('tokenPersonData');
@@ -170,7 +176,7 @@ class UI extends Component {
           <div className="token persondata" id='tokenPersonData'>
             <label htmlFor="token">
               token:
-              <p>a</p>
+              <p> a </p>
             </label>
           </div>
         </div>
