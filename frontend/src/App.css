@@ -33,6 +33,12 @@ section {
   }
 }
 
+.dcaparams {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
 .persondata {
   grid-area: persondata;
   position: relative;
