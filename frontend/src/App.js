@@ -85,7 +85,8 @@ class DcaApp {
   }
 
   async deposit() {
-    const token = document.getElementById('tokenAddress').value;
+    const token_key = document.getElementById('tokenAddressoptionsDiv1').value;
+    const token = erc20TokenAdresses[token_key];
     const amount = document.getElementById('amount').value * 10 ** tokenDecimals[token]
     console.log('this ---', this.userAccount)
     try {
@@ -105,7 +106,8 @@ class DcaApp {
 
   async setDcaParams() {
     const purchaseInterval = document.getElementById('purchaseInterval').value;
-    const purchaseAddress = document.getElementById('purchaseAddress').value;
+    const token_key = document.getElementById('tokenAddressoptionsDiv2').value;
+    const purchaseAddress = erc20TokenAdresses[token_key];
     const purchaseAmount = document.getElementById('purchaseAmount').value * 10 ** 18;
     try {
       // Call the setDCAParameters function on the smart contract
@@ -169,6 +171,27 @@ class UI extends Component {
     const root = createRoot(token_person_data_div);
     root.render(tokens_to_info);
   };
+  show(id, a) {
+    return () => {
+      document.getElementById(id).value = a
+    }
+  }
+  renderOptions(id) {
+    let options = [];
+    for (let key in erc20TokenAdresses) {
+      options.push(<div onClick={this.show('tokenAddress' + id, key)}>{key}</div>);
+    }
+    let optionsDiv = document.getElementById(id);
+    const root = createRoot(optionsDiv);
+    root.render(options);
+  }
+
+  activateDropDown(id) {
+    let dropdown = document.getElementById(id);
+    dropdown.onclick = (function () {
+      dropdown.classList.toggle('active')
+    });
+  }
 
   async renderDcaParams() {
     const { currentAccount, token_name_to_purchaseAmount, token_name_to_purchaseInterval } = await this.dcaApp.getUserDcaParams();
@@ -206,6 +229,10 @@ class UI extends Component {
       alert('Error uploading DCA Parameters. Check your blockchain connection. Check console');
       console.log(error);
     }
+    this.renderOptions('optionsDiv1');
+    this.renderOptions('optionsDiv2');
+    this.activateDropDown('dropdown1');
+    this.activateDropDown('dropdown2');
   };
 
   handleDepositClick = async () => {
@@ -237,11 +264,6 @@ class UI extends Component {
 
   handleExecuteDcaClick = async () => {
     if (this.state.isInitialized) {
-      // if (this.state.dcaParamsSet) {
-      //   await this.dcaApp.executeDca()
-      // } else {
-      //   alert('DCA params is not set yet. First set params.');
-      // }
       try {
         await this.dcaApp.executeDca();
       } catch (error) {
@@ -258,7 +280,6 @@ class UI extends Component {
         await this.renderBalances();
       } catch (error) {
         alert('Error uploading balances. Error Check your blockchain connection. Check console');
-        console.log('hui')
         console.log(error);
       }
     } else {
@@ -278,30 +299,39 @@ class UI extends Component {
       alert('DCA App is still initializing. Please wait.');
     }
   }
-  // TODO: write func for updating balances
   render() {
     return (<section>
       <div className="box">
         <div className="token form">
           <h2>DCA Smart Contract Interaction</h2>
           <form>
-            <div class="inputBx">
-              <label htmlFor="tokenAddress">Token Address:</label>
-              <input type="text" id="tokenAddress" placeholder="Enter token address"></input>
+
+            <div className="inputBx">
+              <label htmlFor="tokenAddressoptionsDiv1">Token Address:</label>
+              <div className="dropdown" id='dropdown1'>
+                <input type="text" id="tokenAddressoptionsDiv1" className="textToken" placeholder="Enter token address"
+                  readOnly></input>
+                <div className="option" id='optionsDiv1'>
+                </div>
+              </div>
             </div>
+
             <div className="inputBx">
               <label htmlFor="amount">Amount:</label>
               <input type="text" id="amount" placeholder="Enter amount" />
               <button onClick={this.handleDepositClick} type='button'>Deposit</button>
             </div>
+
             <div className="inputBx">
-              <label htmlFor="ethAmount">Token Address:</label>
-              <input
-                type="text"
-                id="purchaseAddress"
-                placeholder="Enter purchase token address"
-              />
+              <label htmlFor="tokenAddressoptionsDiv2">Token Address:</label>
+              <div className="dropdown" id='dropdown2'>
+                <input type="text" id="tokenAddressoptionsDiv2" className="textToken" placeholder="Enter token address"
+                  readOnly></input>
+                <div className="option" id='optionsDiv2'>
+                </div>
+              </div>
             </div>
+
             <div className="inputBx">
               <label htmlFor="ethAmount">Token Amount:</label>
               <input
@@ -321,7 +351,7 @@ class UI extends Component {
                 Set DCA Parameters
               </button>
             </div>
-            <div class="inputBx">
+            <div className="inputBx">
               <button onClick={this.handleExecuteDcaClick} type='button'>Execute DCA</button>
             </div>
           </form>
