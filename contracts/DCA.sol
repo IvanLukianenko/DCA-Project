@@ -124,13 +124,13 @@ contract dcaContract{
         singleDcaParams storage currentDcaParams = usersDcaParams[user].tradePairParams[keccak256(abi.encode(_tradePair))];
 
         require(
-            block.timestamp - usersLastTimestamp[user].pair[keccak256(abi.encode(_tradePair))] > currentDcaParams.purchaseInterval, 
+            block.timestamp - usersLastTimestamp[user].pair[keccak256(abi.encode(_tradePair))] > currentDcaParams.purchaseInterval * 1 days, 
             'purchaseInterval has not spent'
         );
 
         uint256 userTokenAmount = usersBalances[user].tokenAmount[_tradePair.tokenIn];
         uint256 amountIn = this.swapExactOutputSingle(user, _tradePair, currentDcaParams.purchaseAmount, userTokenAmount);
-
+        usersLastTimestamp[user].pair[keccak256(abi.encode(_tradePair))] = block.timestamp;
         emit dcaExecuted(user, amountIn);
     }
 
@@ -166,15 +166,7 @@ contract dcaContract{
 
         // Executes the swap returning the amountIn needed to spend to receive the desired amountOut.
         amountIn = swapRouter.exactOutputSingle(params);
-        usersBalances[_userAddress].tokenAmount[_tradePair.tokenIn] -= _amountInMaximum;
-
-        // For exact output swaps, the amountInMaximum may not have all been spent.
-        // If the actual amount spent (amountIn) is less than the specified maximum amount, we must refund the _userAddress and approve the swapRouter to spend 0.
-        if (amountIn < _amountInMaximum) {
-            TransferHelper.safeApprove(_tradePair.tokenIn, address(swapRouter), 0);
-            TransferHelper.safeTransfer(_tradePair.tokenIn, address(this), _amountInMaximum - amountIn);
-            usersBalances[_userAddress].tokenAmount[_tradePair.tokenIn] += _amountInMaximum - amountIn;
-        }
+        usersBalances[_userAddress].tokenAmount[_tradePair.tokenIn] -= amountIn;
     }
 
 }

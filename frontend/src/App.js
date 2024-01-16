@@ -123,11 +123,14 @@ class DcaApp {
   };
 
   async executeDca() {
-    const accounts = await this.web3.eth.getAccounts();
-
     try {
-      // Call the executeDCA function on the smart contract
-      await this.dcaContract.methods.executeDCA().send({ from: accounts[0] });
+      await this.dcaContract.methods.executeDca(
+        [
+          erc20TokenAdresses['USDT'],
+          erc20TokenAdresses['WETH'],
+          3000
+        ]
+      ).send({ from: this.userAccount });
       alert('DCA executed successfully!');
     } catch (error) {
       console.error('Error executing DCA:', error);
@@ -310,7 +313,7 @@ class UI extends Component {
               </button>
             </div>
             <div class="inputBx">
-              <button onClick={this.dcaApp.executeDca} type='button'>Execute DCA</button>
+              <button onClick={this.handleExecuteDcaClick} type='button'>Execute DCA</button>
             </div>
           </form>
         </div>
