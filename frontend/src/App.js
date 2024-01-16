@@ -11,6 +11,10 @@ const erc20TokenAdresses = {
   'DAI': '0x6B175474E89094C44Da98b954EedeAC495271d0F',
   'WETH': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 }
+const tokenDecimals = {
+  '0xdAC17F958D2ee523a2206206994597C13D831ec7': 6,
+  '0x6B175474E89094C44Da98b954EedeAC495271d0F': 18,
+}
 
 class DcaApp {
   async init() {
@@ -81,8 +85,8 @@ class DcaApp {
   }
 
   async deposit() {
-    const amount = document.getElementById('amount').value;
     const token = document.getElementById('tokenAddress').value;
+    const amount = document.getElementById('amount').value * 10 ** tokenDecimals[token]
     console.log('this ---', this.userAccount)
     try {
       // Call the deposit function on the smart contract
@@ -100,9 +104,9 @@ class DcaApp {
   }
 
   async setDcaParams() {
-    const purchaseAmount = document.getElementById('purchaseAmount').value;
     const purchaseInterval = document.getElementById('purchaseInterval').value;
     const purchaseAddress = document.getElementById('purchaseAddress').value;
+    const purchaseAmount = document.getElementById('purchaseAmount').value * 10 ** 18;
     try {
       // Call the setDCAParameters function on the smart contract
       await this.dcaContract.methods.setDcaParams(
@@ -133,8 +137,13 @@ class DcaApp {
       ).send({ from: this.userAccount });
       alert('DCA executed successfully!');
     } catch (error) {
-      console.error('Error executing DCA:', error);
-      alert('Error executing DCA. Please check the console for details.');
+      if (error.message.includes('purchaseInterval has not passed')) {
+        alert('purchaseInterval has not passed. Wait for it. Keep calm.');
+      } else {
+        console.error('Error executing DCA:', error);
+        console.log(error.response)
+        alert('Error executing DCA. Please check the console for details.');
+      }
     }
   };
 }
@@ -237,7 +246,6 @@ class UI extends Component {
         await this.dcaApp.executeDca();
       } catch (error) {
         alert('Error execute DCA. Check your blockchain connection. Check console');
-        console.log(error);
       }
     } else {
       alert('DCA App is still initializing. Please wait.');
@@ -250,6 +258,7 @@ class UI extends Component {
         await this.renderBalances();
       } catch (error) {
         alert('Error uploading balances. Error Check your blockchain connection. Check console');
+        console.log('hui')
         console.log(error);
       }
     } else {
